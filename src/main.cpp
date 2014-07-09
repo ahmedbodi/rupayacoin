@@ -2032,7 +2032,7 @@ int GetAuxPowStartBlock()
     if (fTestNet)
         return 1; // never
     else
-        return 135500; // never
+        return 136000; // never
 }
 
 int GetOurChainID()
