@@ -10,6 +10,7 @@
 #include "net.h"
 #include "init.h"
 #include "util.h" // using DoubleToNumeratorDenominator
+#include "auxpow.h"
 #include "ui_interface.h"
 #include "checkqueue.h"
 #include <boost/algorithm/string/replace.hpp>

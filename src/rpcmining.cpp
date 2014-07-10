@@ -210,7 +210,7 @@ Value getworkex(const Array& params, bool fHelp)
             nStart = GetTime();
 
             // Create new block
-            pblocktemplate = CreateNewBlockWithKey(*pMiningKey);
+            pblocktemplate = CreateNewBlockWithKey(reservekey);
             if (!pblocktemplate)
                 throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
             vNewBlockTemplate.push_back(pblocktemplate);
@@ -482,7 +482,7 @@ Value getblocktemplate(const Array& params, bool fHelp)
             pblocktemplate = NULL;
         }
         CScript scriptDummy = CScript() << OP_TRUE;
-        pblocktemplate = CreateNewBlock(scriptDummy);
+        pblocktemplate = CreateNewBlockWithKey(*pMiningKey);
         if (!pblocktemplate)
             throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
 
@@ -641,7 +641,7 @@ Value getworkaux(const Array& params, bool fHelp)
                 // Deallocate old blocks since they're obsolete now
                 mapNewBlock.clear();
                 BOOST_FOREACH(CBlockTemplate* pblocktemplate, vNewBlockTemplate)
-                delete pblocktemplate;
+                    delete pblocktemplate;
                 vNewBlockTemplate.clear();
             }
             nTransactionsUpdatedLast = nTransactionsUpdated;
@@ -650,7 +650,7 @@ Value getworkaux(const Array& params, bool fHelp)
             nStart = GetTime();
 
             // Create new block
-            pblocktemplate = CreateNewBlock(reservekey);
+            pblocktemplate = CreateNewBlockWithKey(reservekey);
             if (!pblocktemplate)
                 throw JSONRPCError(-7, "Out of memory");
             vNewBlockTemplate.push_back(pblocktemplate);
@@ -789,7 +789,7 @@ Value getauxblock(const Array& params, bool fHelp)
         static unsigned int nTransactionsUpdatedLast;
         static CBlockIndex* pindexPrev;
         static int64 nStart;
-    	static CBlock* pblock;
+	static CBlock* pblock;
         static CBlockTemplate* pblocktemplate;
         if (pindexPrev != pindexBest ||
             (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 60))
@@ -799,7 +799,7 @@ Value getauxblock(const Array& params, bool fHelp)
                 // Deallocate old blocks since they're obsolete now
                 mapNewBlock.clear();
                 BOOST_FOREACH(CBlockTemplate* pblocktemplate, vNewBlockTemplate)
-                delete pblocktemplate;
+                    delete pblocktemplate;
                 vNewBlockTemplate.clear();
             }
             nTransactionsUpdatedLast = nTransactionsUpdated;
@@ -807,11 +807,11 @@ Value getauxblock(const Array& params, bool fHelp)
             nStart = GetTime();
 
             // Create new block with nonce = 0 and extraNonce = 1
-            pblocktemplate = CreateNewBlock(reservekey);
+            pblocktemplate = CreateNewBlockWithKey(reservekey);
             if (!pblocktemplate)
                 throw JSONRPCError(-7, "Out of memory");
 
-    	    pblock = &pblocktemplate->block;
+	    pblock = &pblocktemplate->block;
             // Update nTime
             pblock->nTime = max(pindexPrev->GetMedianTimePast()+1, GetAdjustedTime());
             pblock->nNonce = 0;
@@ -861,4 +861,3 @@ Value getauxblock(const Array& params, bool fHelp)
         }
     }
 }
- 
